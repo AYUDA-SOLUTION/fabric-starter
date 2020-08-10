@@ -7,14 +7,11 @@ function info() {
 orgs=$@
 first_org=${1:-org1}
 
-set -x
-#export DOMAIN="${DOMAIN:-example.com}"
 export SERVICE_CHANNEL=${SERVICE_CHANNEL:-common}
 
 #export LDAP_ENABLED=${LDAP_ENABLED:-true}
 export LDAPADMIN_HTTPS=${LDAPADMIN_HTTPS:-true}
 
-set +x
 
 docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f https/docker-compose-generate-tls-certs.yaml -f https/docker-compose-https-ports.yaml -f docker-compose-ldap.yaml"}
 #docker_compose_args=${DOCKER_COMPOSE_ARGS:-"-f docker-compose.yaml -f docker-compose-couchdb.yaml -f docker-compose-ports.yaml "}
@@ -39,12 +36,16 @@ export FABRIC_STARTER_VERSION=baas-test
 
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
-    export DOCKER_REGISTRY=registry.labdlt.ru
-    export FABRIC_VERSION=latest
-    export FABRIC_STARTER_VERSION=baas-test
+    export DOCKER_REGISTRY=45.12.73.98
+    export FABRIC_VERSION=gost
+    export FABRIC_STARTER_VERSION=gost
     export AUTH_MODE=ADMIN
     export CRYPTO_ALGORITHM=GOST
     export SIGNATURE_HASH_FAMILY=SM3
+
+    sudo mkdir -p /etc/docker/certs.d/${DOCKER_REGISTRY}
+    openssl s_client -showcerts -connect ${DOCKER_REGISTRY}:443 </dev/null 2>/dev/null|openssl x509 -outform PEM \
+        | sudo tee /etc/docker/certs.d/${DOCKER_REGISTRY}/ca.crt
     set +x
 fi
 
