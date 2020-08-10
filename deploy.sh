@@ -34,6 +34,8 @@ export DOCKER_REGISTRY=${DOCKER_REGISTRY:-docker.io}
 export FABRIC_VERSION=1.4.4
 export FABRIC_STARTER_VERSION=baas-test
 
+source ${first_org}_env;
+
 if [ "$DEPLOY_VERSION" == "Hyperledger Fabric 1.4.4-GOST-34" ]; then
     set -x
     export DOCKER_REGISTRY=45.12.73.98
@@ -58,8 +60,6 @@ docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-tools-extended:${FABRIC
 docker pull ${DOCKER_REGISTRY:-docker.io}/olegabu/fabric-starter-rest:${FABRIC_STARTER_VERSION:-latest}
 #docker pull ${DOCKER_REGISTRY:-docker.io}/vrreality/deployer:${FABRIC_STARTER_VERSION:-latest}
 
-
-source ${first_org}_env;
 
 IFS="(" read -r -a domainBootstrapIp <<< ${DOMAIN}
 export DOMAIN=${domainBootstrapIp[0]}
